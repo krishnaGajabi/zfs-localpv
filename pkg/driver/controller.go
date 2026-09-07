@@ -325,9 +325,9 @@ func CreateZFSVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*zfsapi
 			return nil, status.Errorf(codes.Internal, "get suitable nodes failed : %s", serr.Error())
 		}
 
-		// a poolpattern matching no pool anywhere cannot be resolved yet; the
-		// pools may still be reported, so this stays retryable, unlike the
-		// clone guards. A fixed poolname is used as it is and is not held to it
+		// a poolpattern matching no pool anywhere may start matching once an
+		// agent reports its pools, so this reports cluster state rather than a
+		// bad request. A fixed poolname is used as it is and is not held to it
 		if poolpattern != "" && !matched {
 			return nil, status.Errorf(codes.FailedPrecondition,
 				"no pool matching %s is present on any node, volume %s",
